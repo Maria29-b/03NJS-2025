@@ -1,0 +1,13 @@
+un serveur full stack
+
+api route using http methode :get post put delete
+
+req.params
+
+express.json
+
+middleware functions (ex:logger)
+
+postman ( testing all endpoints ) ''tester les fonctionnalites de l'application ; ex: vérifier si les metodes get post put delete fonctionne ''
+
+CRUD api 

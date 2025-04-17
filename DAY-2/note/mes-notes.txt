@@ -1,0 +1,20 @@
+callback et promesse :
+
+callback:
+fs.readFile()   est une fonction asynchrone  
+on appelle fs , pouvoir lire des fichiers
+
+callback hell :
+callback dans un callback dans un callback  ( it make the code hard to read and debug 
+
+a promiseis an object representing a futur result 
+(je reçois la data 
+
+
+ require appler un fichier qui a ete crée ailleur et on veut l'utiliser sur le ficihier actuelle 
+
+on utilise les callback et les promesse pendant la recuperation des données dans une base de données par exemple 
+
+
+promise : avec try - catch ( l'erreur ) 
+then -catch  
