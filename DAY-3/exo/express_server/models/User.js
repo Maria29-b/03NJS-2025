@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-const unserSchema = new Schema({
+const userSchema = new Schema({
   email: {
     type: String,
     require: true,
