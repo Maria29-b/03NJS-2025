@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/User.js';
 
-let users = [];
+
 
 export const register = async (req, res) => {
     const { email, password } = req.body;
@@ -42,7 +42,7 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
     const { email, password } = req.body;
 
-  // Vérifier si l'utilisateur existe
+  // on Vérifie si l'utilisateur existe
   try {
     const user = await User.findOne({ email });
     if (!user) {
@@ -62,7 +62,9 @@ export const login = async (req, res) => {
     { expiresIn: '1h' }
   );
 
-  res.json({ token });
+
+
+res.json({ token });
 }catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
@@ -77,3 +79,15 @@ export const getAllUsersList = async () => {
     const result = await User.findByIdAndDelete(id);
     return result ? true : false;
   };
+
+
+
+  //validation email et mmot de passe 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+if (!emailRegex.test(email)) {
+  return res.status(400).json({ message: 'Invalid email format.' });
+}
+
+if (password.length < 8) {
+  return res.status(400).json({ message: 'Password must be at least 6 characters long.' });
+}
