@@ -1,47 +1,53 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { User } from '../models/User.js';
 
 let users = [];
 
-export const register = (req, res) => {
-  const { email, password } = req.body;
-
+export const register = async (req, res) => {
+    const { email, password } = req.body;
+  
 
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required.' });
   }
 
-  
-  const existingUser = users.find(user => user.email === email);
-  if (existingUser) {
-    return res.status(409).json({ message: 'User already exists.' });
-  }
-
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ message: 'User already exists.' });
+    }
   
   const hashedPassword = bcrypt.hashSync(password, 10);
 
  
-  const newUser = {
-    id: Date.now().toString(),
+  const newUser = new User({
     email,
     password: hashedPassword
-  };
+  });
 
-  users.push(newUser);
+  await newUser.save();
 
 
-  const { password: pwd, ...userWithoutPassword } = newUser;
+  const { password: pwd, ...userWithoutPassword } = newUser.toObject();
   res.status(201).json(userWithoutPassword);
+} catch (err) {
+  res.status(500).json({ message: 'Server error', error: err.message });
+}
 };
 
-export const login = (req, res) => {
-  const { email, password } = req.body;
+
+
+
+export const login = async (req, res) => {
+    const { email, password } = req.body;
 
   // Vérifier si l'utilisateur existe
-  const user = users.find(user => user.email === email);
-  if (!user) {
-    return res.status(401).json({ message: 'Invalid credentials.' });
-  }
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid credentials.' });
+    }
 
  
   const isMatch = bcrypt.compareSync(password, user.password);
@@ -52,20 +58,22 @@ export const login = (req, res) => {
   // Créer le token JWT
   const token = jwt.sign(
     { id: user.id, email: user.email },
-    process.env.JWT_SECRET || 'secret123', // à remplacer par un vrai secret dans .env
+    process.env.JWT_SECRET || 'secret123', 
     { expiresIn: '1h' }
   );
 
   res.json({ token });
+}catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
 };
 
 // Exporter les utilisateurs pour les autres contrôleurs
-export const getAllUsersList = () => users;
-export const removeUserById = (id) => {
-  const index = users.findIndex(u => u.id === id);
-  if (index !== -1) {
-    users.splice(index, 1);
-    return true;
-  }
-  return false;
-};
+export const getAllUsersList = async () => {
+    return await User.find().select('-password');
+  };
+  
+  export const removeUserById = async (id) => {
+    const result = await User.findByIdAndDelete(id);
+    return result ? true : false;
+  };

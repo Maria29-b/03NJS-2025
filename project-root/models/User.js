@@ -1,12 +1,16 @@
 import { Schema, model } from "mongoose";
+import bcrypt from "bcryptjs";
 
 const userSchema = new Schema({
   email: {
     type: String,
-    require: true,
+    required: true,
     unique: true,
   },
-  password: String,
+  password: {
+    type: String,
+    required: true,  
+  },
   isAdmin: {
     type: Boolean,
     default: false,
