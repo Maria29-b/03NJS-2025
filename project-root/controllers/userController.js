@@ -1,4 +1,6 @@
 import { getAllUsersList, removeUserById } from './authController.js';
+import { protect } from '../middleware/protect.js';
+    import User from '../models/User.js';
 
 export const getAllUsers = async (req, res) => {
     try {
@@ -10,20 +12,18 @@ export const getAllUsers = async (req, res) => {
     
 };
 
-export const getUserProfile = async(req, res) => {
+export const getUserProfile = async (req, res) => {
     try {
-        const users = await getAllUsersList(); 
-        const user = users.find(u => u._id.toString() === req.user.id); 
-    
-        if (user) {
-          res.json(user);
-        } else {
-          res.status(404).json({ message: 'User not found' });
-        }
-      } catch (err) {
-        res.status(500).json({ message: 'Server error', error: err.message });
+      const user = await User.findById(req.user.id).select('-password'); // on exclut le mot de passe
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
       }
-};
+      res.json(user);
+    } catch (err) {
+      res.status(500).json({ message: 'Server error', error: err.message });
+    }
+  };
+  
 
 export const deleteUser = async (req, res) => {
     try {
