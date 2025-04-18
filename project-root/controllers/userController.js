@@ -24,6 +24,7 @@ export const getUserProfile = async (req, res) => {
     }
   };
   
+  
 
 export const deleteUser = async (req, res) => {
     try {
@@ -37,3 +38,4 @@ export const deleteUser = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: err.message });
       }
 };
+
