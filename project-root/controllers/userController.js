@@ -1,6 +1,6 @@
 import { getAllUsersList, removeUserById } from './authController.js';
 import { protect } from '../middleware/protect.js';
-    import User from '../models/User.js';
+import {User} from '../models/User.js';
 
 export const getAllUsers = async (req, res) => {
     try {
@@ -14,7 +14,7 @@ export const getAllUsers = async (req, res) => {
 
 export const getUserProfile = async (req, res) => {
     try {
-      const user = await User.findById(req.user.id).select('-password'); // on exclut le mot de passe
+      const user = await User.findById(req.user.id).select('-password');
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }
